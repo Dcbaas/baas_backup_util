@@ -2,8 +2,11 @@ project("baas_backup_util")
 
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(nlohmann_json CONFIG REQUIRED)
+
 set(SOURCES
     "src/main.cpp"
+    "src/config.cpp"
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -13,3 +16,5 @@ target_include_directories(
     PRIVATE
     ${PROJECT_SOURCE_DIR}/include
 )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
