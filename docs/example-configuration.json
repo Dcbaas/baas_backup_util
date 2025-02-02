@@ -1,0 +1,16 @@
+{
+    "7zipExec": "C:\\Program Files\\7-Zip\\7z.exe",
+    "inputs": [
+        {
+            "path": "C:\\Path\\Here",
+            "recursive": true
+        },
+        {
+            "path": "C:\\Path\\Here2"
+        }
+    ],
+    "outputs": [
+        "C:\\Output\\Path\\Here",
+        "C:\\Output\\Path\\Here2"
+    ]
+}
