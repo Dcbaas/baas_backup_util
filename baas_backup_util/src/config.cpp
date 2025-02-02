@@ -26,11 +26,15 @@ namespace baas::configuration
             throw ConfigFileNotFound(path);
         }
         config_json = json::parse(json_file);
+        // TODO What happens if this value isn't present in the json? We need to throw an exception for that
         config.seven_zip_exec = config_json.at(std::string(seven_zip_exec)).get<std::string>();
         for (const auto& input : config_json.at(std::string(inputs)))
         {
+            // TODO Implement recursive. Verify input path works correctly
             std::string input_path = input.at(std::string(path)).get<std::string>();
         }
+
+        // TODO need to implement outputs
 
         return config;
     }
