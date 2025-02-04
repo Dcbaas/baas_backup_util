@@ -16,17 +16,19 @@ namespace baas::configuration
     constexpr std::string_view recursive = "recursive";
     constexpr std::string_view outputs = "outputs";
 
-    Config read_config(const std::string& path)
+
+    Config read_config(const std::string& file_path)
     {
         Config config;
         json config_json;
-        std::ifstream json_file(path);
+        std::ifstream json_file(file_path);
         if (!json_file.is_open())
         {
-            throw ConfigFileNotFound(path);
+            throw ConfigFileNotFound(file_path);
         }
         config_json = json::parse(json_file);
         // TODO What happens if this value isn't present in the json? We need to throw an exception for that
+        // TODO I need a holistic solution to check for values that may not be present in the Json input. 
         config.seven_zip_exec = config_json.at(std::string(seven_zip_exec)).get<std::string>();
         if (config.seven_zip_exec.empty())
         {
@@ -35,7 +37,6 @@ namespace baas::configuration
 
         for (const auto& input : config_json.at(std::string(inputs)))
         {
-            // TODO Implement recursive. Verify input path works correctly
             std::string input_path = input.at(std::string(path)).get<std::string>();
             bool is_recursive = input.at(std::string(recursive)).get<bool>();
             config.inputs.push_back({input_path, is_recursive});

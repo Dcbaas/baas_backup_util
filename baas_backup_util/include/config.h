@@ -17,7 +17,7 @@ namespace baas::configuration
         void display_info() const;
     };
 
-    Config read_config(const std::string& path);
+    Config read_config(const std::string& file_path);
 
     class ConfigFileNotFound : public std::exception
     {
