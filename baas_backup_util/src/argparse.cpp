@@ -10,26 +10,72 @@ namespace baas::argparse
     constexpr std::string_view config_file_flag = "-c";
     constexpr std::string_view config_file_flag_long = "--config";
 
-    
-    // Args can either be verify or   
-    Arguments parse_args(std::span<char*> argv)
+    constexpr bool is_verify_flag(std::string_view arg)
     {
-        for (auto arg : argv)
+        return arg == VERIFY_FLAG || arg == VERIFY_FLAG_LONG;
+    }
+
+    constexpr bool is_config_file_flag(std::string_view arg)
+    {
+        return arg == config_file_flag || arg == config_file_flag_long;
+    }
+
+    constexpr bool is_flag(std::string_view arg)
+    {
+        return is_verify_flag(arg) || is_config_file_flag(arg);
+    }
+
+    enum class ConfigFileArgStatus : u_int8_t
+    {
+        unset,
+        next_arg,
+        set
+    };
+    // Args can either be verify or define a config file
+    Arguments parse_args(std::span<char *> argv)
+    {
+        Arguments args{false, "baas-backup-util.json"};
+
+        bool verify_arg_set{false};
+        ConfigFileArgStatus config_file_arg_status{ConfigFileArgStatus::unset};
+
+        for (auto arg_it = argv.begin(); arg_it != argv.end(); ++arg_it)
         {
-            if (std::string(arg) == VERIFY_FLAG || std::string(arg) == VERIFY_FLAG_LONG)
+            if (is_verify_flag(*arg_it))
             {
-                return {.config_file = "", .verify_config = true};
-            }
-            else if (std::string(arg) == config_file_flag || std::string(arg) == config_file_flag_long)
-            {
-                if (argv.size() < 2)
+                if (verify_arg_set)
                 {
-                    throw std::runtime_error("No config file provided");
+                    throw InvalidArguments("Verify flag was decalred more than once");
                 }
-                return {.config_file = argv[1], .verify_config = false};
+                else
+                {
+                    args.verify_config = true;
+                    verify_arg_set = true;
+
+                }
+            }
+            else if (is_config_file_flag(*arg_it))
+            {
+                if(ConfigFileArgStatus::set == config_file_arg_status)
+                {
+                    throw InvalidArguments("Configuration file was declared more than once");
+                }
+                else if (ConfigFileArgStatus::next_arg == config_file_arg_status)
+                {
+                    throw InvalidArguments("Configuration file flag was declared twice in a row");
+                }
+                else if (arg_it + 1 == argv.end() || is_flag(*(arg_it + 1)))
+                {
+                    throw InvalidArguments("Configuration flag was set but no path was provided");
+                }
+                else
+                {
+                    // Figure out how to set the value here
+                }
             }
         }
-        Arguments args;
+
         return args;
     }
+
 }

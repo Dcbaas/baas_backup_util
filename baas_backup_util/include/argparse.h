@@ -8,10 +8,24 @@ namespace baas::argparse
 {
     struct Arguments
     {
-        std::string config_file;
         bool verify_config;
+        std::string config_file;
     };
 
     Arguments parse_args(std::span<char*> argv);
+
+    class InvalidArguments : public std::exception
+    {
+    public:
+        explicit InvalidArguments(const std::string& message) : message_(message) {}
+
+        const char* what() const noexcept override
+        {
+            return message_.c_str();
+        }
+
+    private:
+        std::string message_;
+    };
 }
 #endif // ARGPARSE_H
