@@ -8,6 +8,7 @@ find_package(spdlog CONFIG REQUIRED)
 set(SOURCES
     "src/main.cpp"
     "src/config.cpp"
+    "src/argparse.cpp"
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

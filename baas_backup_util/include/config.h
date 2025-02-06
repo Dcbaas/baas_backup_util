@@ -1,3 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
 #include <string>
 #include <vector>
 #include <exception>
@@ -49,3 +52,5 @@ namespace baas::configuration
         std::string message;
     };
 }
+
+#endif // CONFIG_H
